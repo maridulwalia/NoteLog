@@ -89,8 +89,5 @@ npm start
 🎨 Custom Notes with Backgrounds –
 A gallery of beautiful note background images will be shown to users. Clicking on one opens a custom note editor where the note is created using that background. All custom notes are stored and displayed in a dedicated Custom Notes Gallery.
 
-🛡️ License
-This project is licensed under the MIT License.
-
 🙌 Credits
 Made by Maridul Walia
