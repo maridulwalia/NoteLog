@@ -34,3 +34,6 @@ mongoose.connect(process.env.MONGO_URI)
 
 app.use('/api/auth', authRoutes);
 app.use('/api/notes', noteRoutes);
+app.use('/api/todos', require('./routes/todoRoutes'));
+app.use('/api/contacts', require('./routes/contactRoutes'));
+app.use('/api/custom-notes', require('./routes/customNoteRoutes'));
