@@ -12,8 +12,45 @@ const TodoList: React.FC = () => {
 
   useEffect(() => {
     fetchTodos();
-    checkReminders();
   }, []);
+
+  // Initialize notifications when component mounts
+  useEffect(() => {
+    const initializeNotifications = async () => {
+      console.log('🔔 Initializing notifications...');
+      
+      if ('Notification' in window) {
+        console.log('📱 Current permission:', Notification.permission);
+        
+        if (Notification.permission === 'default') {
+          console.log('🔐 Requesting notification permission...');
+          const permission = await Notification.requestPermission();
+          console.log('✅ Permission result:', permission);
+        }
+      } else {
+        console.log('❌ Notifications not supported in this browser');
+      }
+    };
+
+    initializeNotifications();
+  }, []);
+
+  // Set up reminder checking interval
+  useEffect(() => {
+    if (todos.length === 0) return;
+
+    // console.log('⏰ Setting up reminder interval for', todos.length, 'todos');
+    
+    const reminderInterval = setInterval(() => {
+      // console.log('🔍 Checking reminders at', new Date().toLocaleTimeString());
+      // checkReminders();
+    }, 1000); // Check every 1 seconds for testing
+
+    return () => {
+      // console.log('🛑 Clearing reminder interval');
+      clearInterval(reminderInterval);
+    };
+  }, [todos]);
 
   const fetchTodos = async () => {
     try {
@@ -28,33 +65,117 @@ const TodoList: React.FC = () => {
   };
 
   const checkReminders = () => {
-    const checkInterval = setInterval(() => {
-      todos.forEach(todo => {
-        if (todo.reminderDate && !todo.isCompleted) {
-          const reminderTime = new Date(todo.reminderDate).getTime();
-          const now = new Date().getTime();
+    console.log('🔍 Checking reminders...', {
+      permission: Notification.permission,
+      todosCount: todos.length,
+      currentTime: new Date().toLocaleString()
+    });
+    
+    if (Notification.permission !== 'granted') {
+      console.log('❌ Notifications not granted');
+      return;
+    }
+    
+    const now = new Date().getTime();
+    
+    todos.forEach(todo => {
+      if (todo.reminderDate && !todo.isCompleted) {
+        const reminderTime = new Date(todo.reminderDate).getTime();
+        const timeDiff = now - reminderTime;
+        
+        // console.log(`📝 Todo: "${todo.title}"`);
+        // console.log(`⏰ Reminder: ${new Date(reminderTime).toLocaleString()}`);
+        // console.log(`🕐 Current: ${new Date(now).toLocaleString()}`);
+        // console.log(`⏱️ Time diff: ${Math.round(timeDiff / 1000)} seconds`);
+        
+        // Check if reminder time has passed and is within the last 60 seconds
+        if (timeDiff >= 0 && timeDiff <= 60000) {
+          const notificationKey = `notification_${todo._id}_${reminderTime}`;
+          console.log('🔑 Checking notification key:', notificationKey);
           
-          if (reminderTime <= now && reminderTime > now - 60000) { // Within last minute
-            if (Notification.permission === 'granted') {
-              new Notification('Todo Reminder', {
-                body: `Reminder: ${todo.title}`,
-                icon: '/favicon.ico'
+          if (!localStorage.getItem(notificationKey)) {
+            console.log('🚨 SHOWING NOTIFICATION for:', todo.title);
+            
+            try {
+              const notification = new Notification('📋 TaskFlow Reminder', {
+                body: `⏰ ${todo.title}${todo.description ? '\n' + todo.description : ''}`,
+                icon: '/vite.svg',
+                tag: todo._id,
+                requireInteraction: true,
+                silent: false,
+                persistent: true
               });
+              
+              // Mark as shown immediately
+              localStorage.setItem(notificationKey, 'shown');
+              console.log('✅ Notification shown and marked');
+              
+              // // Auto-close after 30 seconds instead of 5
+              // setTimeout(() => {
+              //   notification.close();
+              //   console.log('🔕 Notification auto-closed after 30 seconds');
+              // }, 30000);
+              
+              // Handle click
+              notification.onclick = () => {
+                window.focus();
+                notification.close();
+                console.log('👆 Notification clicked');
+              };
+              
+              // Handle close event
+              notification.onclose = () => {
+                console.log('🔕 Notification closed');
+              };
+              
+              // Handle error
+              notification.onerror = (error) => {
+                console.error('❌ Notification error:', error);
+              };
+              
+            } catch (error) {
+              console.error('❌ Error showing notification:', error);
             }
+          } else {
+            console.log('⏭️ Notification already shown for this reminder');
           }
+        } else if (timeDiff < 0) {
+          console.log('⏳ Reminder is in the future');
+        } else {
+          console.log('⏰ Reminder is too old (more than 60 seconds ago)');
         }
-      });
-    }, 60000); // Check every minute
-
-    return () => clearInterval(checkInterval);
+      }
+    });
   };
 
-  useEffect(() => {
-    // Request notification permission
-    if (Notification.permission === 'default') {
-      Notification.requestPermission();
+  // Test notification function (for debugging)
+  const testNotification = () => {
+    console.log('🧪 Testing notification...');
+    if (Notification.permission === 'granted') {
+      try {
+        const notification = new Notification('🧪 Test Notification', {
+          body: 'This is a test notification from NoteLog',
+          icon: '/vite.svg',
+          tag: 'test',
+          requireInteraction: true,
+          persistent: true
+        });
+        
+        setTimeout(() => {
+          notification.close();
+        }, 15000);
+        
+        console.log('✅ Test notification sent');
+      } catch (error) {
+        console.error('❌ Test notification failed:', error);
+      }
+    } else {
+      console.log('❌ Notifications not granted for test');
     }
-  }, []);
+  };
+
+  // Add test button in development
+  const showTestButton = window.location.hostname === 'localhost';
 
   const handleToggleComplete = async (id: string, isCompleted: boolean) => {
     try {
@@ -93,6 +214,14 @@ const TodoList: React.FC = () => {
       } else {
         const newTodo = await todoService.createTodo(todoData);
         setTodos([newTodo, ...todos]);
+        
+        // If reminder is set, log it
+        if (todoData.reminderDate) {
+          console.log('📅 New todo with reminder created:', {
+            title: todoData.title,
+            reminder: new Date(todoData.reminderDate).toLocaleString()
+          });
+        }
       }
       setShowForm(false);
       setEditingTodo(null);
@@ -138,120 +267,132 @@ const TodoList: React.FC = () => {
                 {todos.length} {todos.length === 1 ? 'task' : 'tasks'} total
               </p>
             </div>
-          <button
-            onClick={() => setShowForm(true)}
-            className="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white px-6 py-3 rounded-xl flex items-center gap-2 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
-          >
-            <Plus size={20} />
-            New Task
-          </button>
-        </div>
-
-        {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl mb-6 flex items-center gap-2">
-            <div className="w-2 h-2 bg-red-500 rounded-full"></div>
-            <span>{error}</span>
-          </div>
-        )}
-
-        {showForm && (
-          <TodoForm
-            todo={editingTodo}
-            onSubmit={handleFormSubmit}
-            onCancel={handleCancel}
-          />
-        )}
-
-        <div className="space-y-3">
-          {todos.length === 0 ? (
-            <div className="text-center py-16">
-              <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <CheckCircle className="w-8 h-8 text-slate-400" />
-              </div>
-              <h3 className="text-xl font-semibold text-slate-800 mb-2">No tasks yet</h3>
-              <p className="text-slate-600 mb-6">Create your first task to get started</p>
+            <div className="flex items-center gap-3">
+              {showTestButton && (
+                <button
+                  onClick={testNotification}
+                  className="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-xl text-sm transition-all duration-200 transform hover:scale-105"
+                >
+                  Test 🔔
+                </button>
+              )}
               <button
                 onClick={() => setShowForm(true)}
-                className="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white px-6 py-3 rounded-xl flex items-center gap-2 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl mx-auto"
+                className="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white px-6 py-3 rounded-xl flex items-center gap-2 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
               >
                 <Plus size={20} />
-                Create First Task
+                New Task
               </button>
             </div>
-          ) : (
-            todos.map((todo) => (
-              <div
-                key={todo._id}
-                className={`bg-white/60 backdrop-blur-sm rounded-xl p-5 border-l-4 transition-all duration-300 hover:shadow-lg hover:bg-white/80 ${
-                  todo.isCompleted
-                    ? 'border-emerald-400 bg-emerald-50/50'
-                    : 'border-blue-400 shadow-sm'
-                }`}
-              >
-                <div className="flex items-start justify-between">
-                  <div className="flex items-start gap-3 flex-1">
-                    <button
-                      onClick={() => handleToggleComplete(todo._id, todo.isCompleted)}
-                      className={`mt-1 transition-all duration-200 hover:scale-110 ${
-                        todo.isCompleted ? 'text-emerald-500' : 'text-slate-400 hover:text-emerald-500'
-                      }`}
-                    >
-                      {todo.isCompleted ? <CheckCircle size={20} /> : <Circle size={20} />}
-                    </button>
-                    <div className="flex-1">
-                      <h3
-                        className={`font-semibold text-lg transition-all duration-300 ${
-                          todo.isCompleted
-                            ? 'text-slate-500 line-through'
-                            : 'text-slate-800'
+          </div>
+
+          {error && (
+            <div className="bg-red-50/80 backdrop-blur-sm border border-red-200 text-red-700 px-4 py-3 rounded-xl mb-6 flex items-center gap-2">
+              <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+              <span>{error}</span>
+            </div>
+          )}
+
+          {showForm && (
+            <TodoForm
+              todo={editingTodo}
+              onSubmit={handleFormSubmit}
+              onCancel={handleCancel}
+            />
+          )}
+
+          <div className="space-y-3">
+            {todos.length === 0 ? (
+              <div className="text-center py-16">
+                <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <CheckCircle className="w-8 h-8 text-slate-400" />
+                </div>
+                <h3 className="text-xl font-semibold text-slate-800 mb-2">No tasks yet</h3>
+                <p className="text-slate-600 mb-6">Create your first task to get started</p>
+                <button
+                  onClick={() => setShowForm(true)}
+                  className="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white px-6 py-3 rounded-xl flex items-center gap-2 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl mx-auto"
+                >
+                  <Plus size={20} />
+                  Create First Task
+                </button>
+              </div>
+            ) : (
+              todos.map((todo) => (
+                <div
+                  key={todo._id}
+                  className={`bg-white/60 backdrop-blur-sm rounded-xl p-5 border-l-4 transition-all duration-300 hover:shadow-lg hover:bg-white/80 ${
+                    todo.isCompleted
+                      ? 'border-emerald-400 bg-emerald-50/50'
+                      : 'border-blue-400 shadow-sm'
+                  }`}
+                >
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-start gap-3 flex-1">
+                      <button
+                        onClick={() => handleToggleComplete(todo._id, todo.isCompleted)}
+                        className={`mt-1 transition-all duration-200 hover:scale-110 ${
+                          todo.isCompleted ? 'text-emerald-500' : 'text-slate-400 hover:text-emerald-500'
                         }`}
                       >
-                        {todo.title}
-                      </h3>
-                      {todo.description && (
-                        <p
-                          className={`text-gray-600 mt-1 transition-all duration-300 ${
-                            todo.isCompleted ? 'line-through opacity-60' : ''
+                        {todo.isCompleted ? <CheckCircle size={20} /> : <Circle size={20} />}
+                      </button>
+                      <div className="flex-1">
+                        <h3
+                          className={`font-semibold text-lg transition-all duration-300 ${
+                            todo.isCompleted
+                              ? 'text-slate-500 line-through'
+                              : 'text-slate-800'
                           }`}
                         >
-                          {todo.description}
-                        </p>
-                      )}
-                      <div className="flex items-center gap-4 mt-3 text-sm text-slate-500">
-                        <div className="flex items-center gap-1">
-                          <Clock size={14} />
-                          <span>{formatDate(todo.createdAt)}</span>
-                        </div>
-                        {todo.reminderDate && (
-                          <div className="flex items-center gap-1 text-amber-600">
-                            <Bell size={14} />
-                            <span>{formatDate(todo.reminderDate)}</span>
-                          </div>
+                          {todo.title}
+                        </h3>
+                        {todo.description && (
+                          <p
+                            className={`text-gray-600 mt-1 transition-all duration-300 ${
+                              todo.isCompleted ? 'line-through opacity-60' : ''
+                            }`}
+                          >
+                            {todo.description}
+                          </p>
                         )}
+                        <div className="flex items-center gap-4 mt-3 text-sm text-slate-500">
+                          <div className="flex items-center gap-1">
+                            <Clock size={14} />
+                            <span>{formatDate(todo.createdAt)}</span>
+                          </div>
+                          {todo.reminderDate && (
+                            <div className="flex items-center gap-1 text-amber-600">
+                              <Bell size={14} />
+                              <span>{formatDate(todo.reminderDate)}</span>
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="flex items-center gap-2 ml-4">
-                    <button
-                      onClick={() => handleEdit(todo)}
-                      className="text-slate-400 hover:text-blue-600 p-2 rounded-lg hover:bg-blue-50 transition-all duration-200 hover:scale-110"
-                    >
-                      <Edit size={16} />
-                    </button>
-                    <button
-                      onClick={() => handleDelete(todo._id)}
-                      className="text-slate-400 hover:text-red-500 p-2 rounded-lg hover:bg-red-50 transition-all duration-200 hover:scale-110"
-                    >
-                      <Trash2 size={16} />
-                    </button>
+                    <div className="flex items-center gap-2 ml-4">
+                      <button
+                      title='Editing'
+                        onClick={() => handleEdit(todo)}
+                        className="text-slate-400 hover:text-blue-600 p-2 rounded-lg hover:bg-blue-50 transition-all duration-200 hover:scale-110"
+                      >
+                        <Edit size={16} />
+                      </button>
+                      <button
+                      title='Deleting'
+                        onClick={() => handleDelete(todo._id)}
+                        className="text-slate-400 hover:text-red-500 p-2 rounded-lg hover:bg-red-50 transition-all duration-200 hover:scale-110"
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))
-          )}
+              ))
+            )}
+          </div>
         </div>
       </div>
-    </div>
     </div>
   );
 };
