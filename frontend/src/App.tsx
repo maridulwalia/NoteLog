@@ -45,6 +45,7 @@ const Notification: React.FC<NotificationProps> = ({ type, message, onClose }) =
         {message}
       </span>
       <button
+      title="On close"
         type="button"
         onClick={onClose}
         className={`p-1 rounded-full hover:bg-opacity-20 transition-colors ${
@@ -162,7 +163,7 @@ function App() {
   const ActiveComponent = tabs.find((tab) => tab.id === activeTab)?.component;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-full bg-gray-50">
       {/* Notification */}
       {notification && (
         <Notification
@@ -260,7 +261,7 @@ function App() {
           </header>
 
           {/* Main Content */}
-          <main className="py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <main className="py-2 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             {ActiveComponent && <ActiveComponent onError={handleError} />}
           </main>
         </>

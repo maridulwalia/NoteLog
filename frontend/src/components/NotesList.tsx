@@ -93,30 +93,30 @@ const NotesList: React.FC<NotesListProps> = ({ onError }) => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-full bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 flex items-center justify-center">
         <div className="text-center">
-          <Loader2 className="h-12 w-12 text-blue-500 animate-spin mx-auto mb-4" />
-          <p className="text-gray-600">Loading your notes...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
+          <p className="text-slate-600 font-medium">Loading your notes...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-6">
+    <div className="min-h-full bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+      {/* <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8"> */}
+        <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 p-8">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">My Notes</h1>
-              <p className="text-gray-600 mt-1">
+              <h1 className="text-3xl font-bold text-slate-800 mb-2">My Notes</h1>
+              <p className="text-slate-600">
                 {notes.length} {notes.length === 1 ? 'note' : 'notes'} total
               </p>
             </div>
             <button
               onClick={handleCreateNote}
               disabled={isCreating}
-              className="flex items-center space-x-2 bg-gradient-to-r from-blue-500 to-teal-500 text-white px-6 py-3 rounded-lg hover:from-blue-600 hover:to-teal-600 transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+              className="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white px-6 py-3 rounded-xl flex items-center gap-2 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             >
               {isCreating ? (
                 <>
@@ -132,64 +132,65 @@ const NotesList: React.FC<NotesListProps> = ({ onError }) => {
             </button>
           </div>
 
-          <div className="relative max-w-md">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+          <div className="relative max-w-md mb-8">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-slate-400" />
             <input
               type="text"
               placeholder="Search notes..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+              className="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/60 backdrop-blur-sm"
             />
           </div>
+
+          {filteredNotes.length === 0 ? (
+            <div className="text-center py-16">
+              <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <FileText className="w-8 h-8 text-slate-400" />
+              </div>
+              <h3 className="text-xl font-semibold text-slate-800 mb-2">
+                {searchTerm ? 'No notes found' : 'No notes yet'}
+              </h3>
+              <p className="text-slate-600 mb-6">
+                {searchTerm
+                  ? 'Try adjusting your search terms.'
+                  : 'Create your first note to get started.'}
+              </p>
+              {!searchTerm && (
+                <button
+                  onClick={handleCreateNote}
+                  disabled={isCreating}
+                  className="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white px-6 py-3 rounded-xl flex items-center gap-2 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl mx-auto disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                >
+                  {isCreating ? (
+                    <>
+                      <Loader2 className="h-5 w-5 animate-spin" />
+                      <span>Creating...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Plus className="h-5 w-5" />
+                      <span>Create First Note</span>
+                    </>
+                  )}
+                </button>
+              )}
+            </div>
+          ) : (
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {filteredNotes.map((note) => (
+                <NoteItem
+                  key={note.id}
+                  note={note}
+                  onUpdate={handleUpdateNote}
+                  onDelete={handleDeleteNote}
+                  isUpdating={isUpdating}
+                />
+              ))}
+            </div>
+          )}
         </div>
-
-        {filteredNotes.length === 0 ? (
-          <div className="text-center py-16">
-            <FileText className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">
-              {searchTerm ? 'No notes found' : 'No notes yet'}
-            </h3>
-            <p className="text-gray-600 mb-6">
-              {searchTerm
-                ? 'Try adjusting your search terms.'
-                : 'Create your first note to get started.'}
-            </p>
-            {!searchTerm && (
-              <button
-                onClick={handleCreateNote}
-                disabled={isCreating}
-                className="flex items-center space-x-2 bg-gradient-to-r from-blue-500 to-teal-500 text-white px-6 py-3 rounded-lg hover:from-blue-600 hover:to-teal-600 transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none mx-auto"
-              >
-                {isCreating ? (
-                  <>
-                    <Loader2 className="h-5 w-5 animate-spin" />
-                    <span>Creating...</span>
-                  </>
-                ) : (
-                  <>
-                    <Plus className="h-5 w-5" />
-                    <span>Create First Note</span>
-                  </>
-                )}
-              </button>
-            )}
-          </div>
-        ) : (
-
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {filteredNotes.map((note) => (
-              <NoteItem
-                key={note.id}
-                note={note}
-                onUpdate={handleUpdateNote}
-                onDelete={handleDeleteNote}
-                isUpdating={isUpdating}
-              />
-            ))}
-          </div>
-        )}
-      </div>
+      {/* </div> */}
     </div>
   );
 };

@@ -76,44 +76,44 @@ const BackgroundGallery: React.FC<BackgroundGalleryProps> = ({ onSelectBackgroun
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-        <div className="flex justify-between items-center p-6 border-b">
-          <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+      <div className="bg-white rounded-2xl shadow-2xl max-w-5xl w-full max-h-[90vh] overflow-y-auto border border-white/20">
+        <div className="flex justify-between items-center p-6 border-b border-slate-200">
+          <h2 className="text-2xl font-bold text-slate-800 flex items-center gap-3">
             <Image size={24} />
             Choose Background
           </h2>
           <button
             onClick={onClose}
-            className="text-gray-500 hover:text-gray-700 p-2 rounded-lg hover:bg-gray-100 transition-colors"
+            className="text-slate-400 hover:text-slate-600 p-2 rounded-lg hover:bg-slate-100 transition-all duration-200 hover:scale-110"
           >
             <X size={24} />
           </button>
         </div>
 
         <div className="p-6">
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 mb-8">
             {backgroundImages.map((image, index) => (
               <div
                 key={index}
                 onClick={() => handleImageSelect(image)}
-                className={`relative cursor-pointer rounded-lg overflow-hidden transition-all duration-200 hover:scale-105 ${
+                className={`relative cursor-pointer rounded-xl overflow-hidden transition-all duration-300 hover:scale-105 ${
                   selectedImage?.url === image.url
-                    ? 'ring-4 ring-blue-500 scale-105'
-                    : 'hover:shadow-lg'
+                    ? 'ring-4 ring-blue-500 scale-105 shadow-xl'
+                    : 'hover:shadow-lg border border-white/20'
                 }`}
               >
                 <img
                   src={image.url}
                   alt={image.title}
-                  className="w-full h-32 object-cover"
+                  className="w-full h-36 object-cover"
                 />
-                <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white p-2 text-sm">
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent text-white p-3 text-sm font-medium">
                   {image.title}
                 </div>
                 {selectedImage?.url === image.url && (
-                  <div className="absolute inset-0 bg-blue-500 bg-opacity-20 flex items-center justify-center">
-                    <div className="bg-blue-500 text-white rounded-full p-2">
+                  <div className="absolute inset-0 bg-blue-500/20 backdrop-blur-sm flex items-center justify-center">
+                    <div className="bg-blue-500 text-white rounded-full p-3 shadow-lg">
                       <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                       </svg>
@@ -127,14 +127,14 @@ const BackgroundGallery: React.FC<BackgroundGalleryProps> = ({ onSelectBackgroun
           <div className="flex gap-3 justify-end">
             <button
               onClick={onClose}
-              className="px-6 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg transition-colors"
+              className="px-6 py-3 bg-slate-500 hover:bg-slate-600 text-white rounded-xl transition-all duration-200 transform hover:scale-105"
             >
               Cancel
             </button>
             <button
               onClick={handleConfirmSelection}
               disabled={!selectedImage}
-              className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+              className="px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white rounded-xl transition-all duration-200 transform hover:scale-105 disabled:bg-slate-400 disabled:cursor-not-allowed disabled:transform-none shadow-lg"
             >
               Create Note
             </button>

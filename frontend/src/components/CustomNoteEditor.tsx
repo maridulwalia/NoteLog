@@ -98,20 +98,23 @@ const CustomNoteEditor: React.FC<CustomNoteEditorProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-        <div className="flex justify-between items-center p-6 border-b">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+      <div className="bg-white rounded-2xl shadow-2xl max-w-5xl w-full max-h-[90vh] overflow-y-auto border border-white/20">
+        <div className="flex justify-between items-center p-6 border-b border-slate-200">
           <div>
-            <h2 className="text-2xl font-bold text-gray-800">
+            <h2 className="text-2xl font-bold text-slate-800">
               {existingNote ? 'Edit Note' : 'Create Note'}
             </h2>
             {isDraft && !existingNote && (
-              <p className="text-sm text-amber-600 mt-1">Draft saved locally</p>
+              <p className="text-sm text-amber-600 mt-1 flex items-center gap-1">
+                <div className="w-2 h-2 bg-amber-500 rounded-full animate-pulse"></div>
+                Draft saved locally
+              </p>
             )}
           </div>
           <button
             onClick={handleCancel}
-            className="text-gray-500 hover:text-gray-700 p-2 rounded-lg hover:bg-gray-100 transition-colors"
+            className="text-slate-400 hover:text-slate-600 p-2 rounded-lg hover:bg-slate-100 transition-all duration-200 hover:scale-110"
           >
             <X size={24} />
           </button>
@@ -119,19 +122,19 @@ const CustomNoteEditor: React.FC<CustomNoteEditorProps> = ({
 
         <div className="flex flex-col lg:flex-row">
           {/* Background Preview */}
-          <div className="lg:w-1/2 p-6">
-            <div className="relative rounded-lg overflow-hidden mb-4">
+          <div className="lg:w-1/2 p-6 border-r border-slate-200">
+            <div className="relative rounded-xl overflow-hidden mb-6 shadow-lg">
               <img
                 src={backgroundImage.url}
                 alt={backgroundImage.title}
-                className="w-full h-64 object-cover"
+                className="w-full h-72 object-cover"
               />
-              <div className="absolute inset-0 bg-black bg-opacity-20 flex items-center justify-center">
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent flex items-center justify-center">
                 <div className="text-white text-center">
-                  <h3 className="text-xl font-bold mb-2">
+                  <h3 className="text-2xl font-bold mb-2 drop-shadow-lg">
                     {noteData.title || 'Untitled Note'}
                   </h3>
-                  <p className="text-sm opacity-90">
+                  <p className="text-sm opacity-90 drop-shadow">
                     Background: {backgroundImage.title}
                   </p>
                 </div>
@@ -139,9 +142,9 @@ const CustomNoteEditor: React.FC<CustomNoteEditorProps> = ({
             </div>
 
             {existingNote && (
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <h4 className="font-semibold text-gray-800 mb-2">Note Info</h4>
-                <div className="space-y-2 text-sm text-gray-600">
+              <div className="bg-slate-50/80 backdrop-blur-sm p-4 rounded-xl border border-slate-200">
+                <h4 className="font-semibold text-slate-800 mb-3">Note Information</h4>
+                <div className="space-y-2 text-sm text-slate-600">
                   <div className="flex items-center gap-2">
                     <Calendar size={14} />
                     <span>Created: {formatDate(existingNote.createdAt)}</span>
@@ -156,10 +159,10 @@ const CustomNoteEditor: React.FC<CustomNoteEditorProps> = ({
           </div>
 
           {/* Note Form */}
-          <div className="lg:w-1/2 p-6 border-l">
+          <div className="lg:w-1/2 p-6">
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="title" className="block text-sm font-medium text-slate-700 mb-2">
                   Title *
                 </label>
                 <input
@@ -169,13 +172,13 @@ const CustomNoteEditor: React.FC<CustomNoteEditorProps> = ({
                   value={noteData.title}
                   onChange={handleChange}
                   required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                   placeholder="Enter note title"
                 />
               </div>
 
               <div>
-                <label htmlFor="content" className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="content" className="block text-sm font-medium text-slate-700 mb-2">
                   Content
                 </label>
                 <textarea
@@ -184,15 +187,15 @@ const CustomNoteEditor: React.FC<CustomNoteEditorProps> = ({
                   value={noteData.content}
                   onChange={handleChange}
                   rows={12}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                  className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none transition-all duration-200"
                   placeholder="Write your note content here..."
                 />
               </div>
 
-              <div className="flex gap-3 pt-4">
+              <div className="flex gap-3 pt-6">
                 <button
                   type="submit"
-                  className="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors"
+                  className="flex-1 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white px-4 py-3 rounded-xl flex items-center justify-center gap-2 transition-all duration-200 transform hover:scale-105 shadow-lg"
                 >
                   <Save size={16} />
                   {existingNote ? 'Update Note' : 'Save Note'}
@@ -200,7 +203,7 @@ const CustomNoteEditor: React.FC<CustomNoteEditorProps> = ({
                 <button
                   type="button"
                   onClick={handleCancel}
-                  className="flex-1 bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors"
+                  className="flex-1 bg-slate-500 hover:bg-slate-600 text-white px-4 py-3 rounded-xl transition-all duration-200 transform hover:scale-105"
                 >
                   Cancel
                 </button>

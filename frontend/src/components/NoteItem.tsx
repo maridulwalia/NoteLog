@@ -109,9 +109,9 @@ const NoteItem: React.FC<NoteItemProps> = ({ note, onUpdate, onDelete, isUpdatin
 
   return (
     <div
-      className={`bg-white rounded-lg shadow-sm border p-6 transition-all duration-200 hover:shadow-md ${
+      className={`bg-white/60 backdrop-blur-sm rounded-xl border p-6 transition-all duration-300 hover:shadow-lg hover:bg-white/80 ${
         isDeleting ? 'opacity-50 scale-95' : ''
-      } ${note.isDraft ? 'border-dashed border-blue-400' : 'border-gray-200'}`}
+      } ${note.isDraft ? 'border-dashed border-blue-400 bg-blue-50/50' : 'border-white/20 shadow-sm'}`}
     >
       {isEditing ? (
         <div className="space-y-4">
@@ -121,7 +121,7 @@ const NoteItem: React.FC<NoteItemProps> = ({ note, onUpdate, onDelete, isUpdatin
             value={editTitle}
             onChange={(e) => setEditTitle(e.target.value)}
             onKeyDown={handleKeyDown}
-            className="w-full text-xl font-semibold border-none outline-none bg-gray-50 p-2 rounded focus:bg-white focus:ring-2 focus:ring-blue-500"
+            className="w-full text-xl font-semibold border-none outline-none bg-slate-50/80 p-3 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-500 transition-all duration-200"
             placeholder="Note title..."
           />
           <textarea
@@ -130,15 +130,15 @@ const NoteItem: React.FC<NoteItemProps> = ({ note, onUpdate, onDelete, isUpdatin
             onChange={(e) => setEditContent(e.target.value)}
             onKeyDown={handleKeyDown}
             rows={6}
-            className="w-full border-none outline-none bg-gray-50 p-2 rounded focus:bg-white focus:ring-2 focus:ring-blue-500 resize-none"
+            className="w-full border-none outline-none bg-slate-50/80 p-3 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-500 resize-none transition-all duration-200"
             placeholder="Write your note here..."
           />
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center gap-2">
               <button
                 onClick={handleSave}
                 disabled={isUpdating}
-                className="flex items-center space-x-1 px-3 py-1 bg-green-500 text-white rounded-lg hover:bg-green-600 disabled:opacity-50"
+                className="flex items-center gap-1 px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl transition-all duration-200 transform hover:scale-105 disabled:opacity-50 shadow-sm"
               >
                 <Check className="h-4 w-4" />
                 <span>Save</span>
@@ -146,25 +146,25 @@ const NoteItem: React.FC<NoteItemProps> = ({ note, onUpdate, onDelete, isUpdatin
               <button
                 onClick={handleCancel}
                 disabled={isUpdating}
-                className="flex items-center space-x-1 px-3 py-1 bg-gray-500 text-white rounded-lg hover:bg-gray-600 disabled:opacity-50"
+                className="flex items-center gap-1 px-4 py-2 bg-slate-500 hover:bg-slate-600 text-white rounded-xl transition-all duration-200 transform hover:scale-105 disabled:opacity-50 shadow-sm"
               >
                 <X className="h-4 w-4" />
                 <span>Cancel</span>
               </button>
             </div>
-            <p className="text-xs text-gray-500">Ctrl+Enter to save, Esc to cancel</p>
+            <p className="text-xs text-slate-500 font-medium">Ctrl+Enter to save, Esc to cancel</p>
           </div>
         </div>
       ) : (
         <>
           <div className="flex items-start justify-between mb-4">
-            <h3 className="text-xl font-semibold text-gray-900 flex-1">
+            <h3 className="text-xl font-semibold text-slate-800 flex-1 leading-tight">
               {note.title || 'Untitled'}
             </h3>
-            <div className="flex items-center space-x-2 ml-4">
+            <div className="flex items-center gap-1 ml-4">
               <button
                 onClick={handleEdit}
-                className="p-1 text-gray-400 hover:text-blue-500"
+                className="p-2 text-slate-400 hover:text-blue-600 rounded-lg hover:bg-blue-50 transition-all duration-200 hover:scale-110"
                 title="Edit note"
               >
                 <Edit3 className="h-4 w-4" />
@@ -172,7 +172,7 @@ const NoteItem: React.FC<NoteItemProps> = ({ note, onUpdate, onDelete, isUpdatin
               <button
                 onClick={handleDelete}
                 disabled={isDeleting}
-                className="p-1 text-gray-400 hover:text-red-500 disabled:opacity-50"
+                className="p-2 text-slate-400 hover:text-red-500 rounded-lg hover:bg-red-50 transition-all duration-200 hover:scale-110 disabled:opacity-50"
                 title="Delete note"
               >
                 <Trash2 className="h-4 w-4" />
@@ -181,18 +181,18 @@ const NoteItem: React.FC<NoteItemProps> = ({ note, onUpdate, onDelete, isUpdatin
           </div>
 
           <div className="mb-4">
-            <p className="text-gray-700 whitespace-pre-wrap leading-relaxed">
+            <p className="text-slate-700 whitespace-pre-wrap leading-relaxed">
               {note.content || 'No content'}
             </p>
           </div>
 
-          <div className="flex items-center space-x-4 text-xs text-gray-500">
-            <div className="flex items-center space-x-1">
+          <div className="flex items-center gap-4 text-xs text-slate-500">
+            <div className="flex items-center gap-1">
               <Clock className="h-3 w-3" />
               <span>Created: {formatDate(note.createdAt)}</span>
             </div>
             {note.updatedAt !== note.createdAt && (
-              <div className="flex items-center space-x-1">
+              <div className="flex items-center gap-1">
                 <Clock className="h-3 w-3" />
                 <span>Updated: {formatDate(note.updatedAt)}</span>
               </div>

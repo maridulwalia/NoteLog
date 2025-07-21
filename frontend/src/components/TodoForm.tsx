@@ -47,15 +47,16 @@ const TodoForm: React.FC<TodoFormProps> = ({ todo, onSubmit, onCancel }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
-        <div className="flex justify-between items-center p-6 border-b">
-          <h2 className="text-2xl font-bold text-gray-800">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+      <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto border border-white/20">
+        <div className="flex justify-between items-center p-6 border-b border-slate-200">
+          <h2 className="text-2xl font-bold text-slate-800">
             {todo ? 'Edit Todo' : 'Create Todo'}
           </h2>
           <button
+          title= "Cancel"
             onClick={onCancel}
-            className="text-gray-500 hover:text-gray-700 p-2 rounded-lg hover:bg-gray-100 transition-colors"
+            className="text-slate-400 hover:text-slate-600 p-2 rounded-lg hover:bg-slate-100 transition-all duration-200 hover:scale-110"
           >
             <X size={24} />
           </button>
@@ -63,7 +64,7 @@ const TodoForm: React.FC<TodoFormProps> = ({ todo, onSubmit, onCancel }) => {
 
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           <div>
-            <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="title" className="block text-sm font-medium text-slate-700 mb-2">
               Title *
             </label>
             <input
@@ -73,13 +74,13 @@ const TodoForm: React.FC<TodoFormProps> = ({ todo, onSubmit, onCancel }) => {
               value={formData.title}
               onChange={handleChange}
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
               placeholder="Enter todo title"
             />
           </div>
 
           <div>
-            <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="description" className="block text-sm font-medium text-slate-700 mb-2">
               Description
             </label>
             <textarea
@@ -88,13 +89,13 @@ const TodoForm: React.FC<TodoFormProps> = ({ todo, onSubmit, onCancel }) => {
               value={formData.description}
               onChange={handleChange}
               rows={3}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 resize-none"
               placeholder="Enter todo description"
             />
           </div>
 
           <div>
-            <label htmlFor="reminderDate" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="reminderDate" className="block text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
               <Calendar size={16} className="inline mr-1" />
               Reminder Date
             </label>
@@ -105,14 +106,14 @@ const TodoForm: React.FC<TodoFormProps> = ({ todo, onSubmit, onCancel }) => {
               value={formData.reminderDate}
               onChange={handleChange}
               min={new Date().toISOString().slice(0, 16)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
             />
           </div>
 
-          <div className="flex gap-3 pt-4">
+          <div className="flex gap-3 pt-6">
             <button
               type="submit"
-              className="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors"
+              className="flex-1 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white px-4 py-3 rounded-xl flex items-center justify-center gap-2 transition-all duration-200 transform hover:scale-105 shadow-lg"
             >
               <Save size={16} />
               {todo ? 'Update' : 'Create'}
@@ -120,7 +121,7 @@ const TodoForm: React.FC<TodoFormProps> = ({ todo, onSubmit, onCancel }) => {
             <button
               type="button"
               onClick={onCancel}
-              className="flex-1 bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors"
+              className="flex-1 bg-slate-500 hover:bg-slate-600 text-white px-4 py-3 rounded-xl transition-all duration-200 transform hover:scale-105"
             >
               Cancel
             </button>
