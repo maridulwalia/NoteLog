@@ -17,51 +17,51 @@ const BackgroundGallery: React.FC<BackgroundGalleryProps> = ({ onSelectBackgroun
   const backgroundImages: BackgroundImage[] = [
     {
       url: 'https://images.pexels.com/photos/1323712/pexels-photo-1323712.jpeg?auto=compress&cs=tinysrgb&w=800',
-      title: 'Ocean Waves'
-    },
-    {
-      url: 'https://images.pexels.com/photos/1629236/pexels-photo-1629236.jpeg?auto=compress&cs=tinysrgb&w=800',
-      title: 'Mountain Vista'
-    },
-    {
-      url: 'https://images.pexels.com/photos/1366919/pexels-photo-1366919.jpeg?auto=compress&cs=tinysrgb&w=800',
-      title: 'Forest Path'
-    },
-    {
-      url: 'https://images.pexels.com/photos/1933239/pexels-photo-1933239.jpeg?auto=compress&cs=tinysrgb&w=800',
-      title: 'Desert Sunset'
-    },
-    {
-      url: 'https://images.pexels.com/photos/1563356/pexels-photo-1563356.jpeg?auto=compress&cs=tinysrgb&w=800',
-      title: 'City Lights'
-    },
-    {
-      url: 'https://images.pexels.com/photos/1172253/pexels-photo-1172253.jpeg?auto=compress&cs=tinysrgb&w=800',
-      title: 'Autumn Leaves'
-    },
-    {
-      url: 'https://images.pexels.com/photos/1386604/pexels-photo-1386604.jpeg?auto=compress&cs=tinysrgb&w=800',
-      title: 'Starry Night'
-    },
-    {
-      url: 'https://images.pexels.com/photos/1761279/pexels-photo-1761279.jpeg?auto=compress&cs=tinysrgb&w=800',
-      title: 'Tropical Beach'
-    },
-    {
-      url: 'https://images.pexels.com/photos/1415810/pexels-photo-1415810.jpeg?auto=compress&cs=tinysrgb&w=800',
-      title: 'Snowy Mountains'
-    },
-    {
-      url: 'https://images.pexels.com/photos/1029604/pexels-photo-1029604.jpeg?auto=compress&cs=tinysrgb&w=800',
-      title: 'Flower Field'
-    },
-    {
-      url: 'https://images.pexels.com/photos/1624496/pexels-photo-1624496.jpeg?auto=compress&cs=tinysrgb&w=800',
       title: 'Abstract Art'
     },
     {
+      url: 'https://images.pexels.com/photos/1629236/pexels-photo-1629236.jpeg?auto=compress&cs=tinysrgb&w=800',
+      title: 'Starry Night'
+    },
+    {
+      url: 'https://images.pexels.com/photos/1366919/pexels-photo-1366919.jpeg?auto=compress&cs=tinysrgb&w=800',
+      title: 'Snowy Mountains'
+    },
+    {
+      url: 'https://images.pexels.com/photos/1933239/pexels-photo-1933239.jpeg?auto=compress&cs=tinysrgb&w=800',
+      title: 'Aurora Borealis'
+    },
+    {
+      url: 'https://images.pexels.com/photos/1563356/pexels-photo-1563356.jpeg?auto=compress&cs=tinysrgb&w=800',
+      title: 'Autumn Leaves'
+    },
+    {
+      url: 'https://images.pexels.com/photos/1172253/pexels-photo-1172253.jpeg?auto=compress&cs=tinysrgb&w=800',
+      title: 'Lake View'
+    },
+    {
+      url: 'https://images.pexels.com/photos/1386604/pexels-photo-1386604.jpeg?auto=compress&cs=tinysrgb&w=800',
+      title: 'Beautiful Flowers'
+    },
+    {
+      url: 'https://images.pexels.com/photos/1761279/pexels-photo-1761279.jpeg?auto=compress&cs=tinysrgb&w=800',
+      title: 'Rope Bridge'
+    },
+    {
+      url: 'https://images.pexels.com/photos/1415810/pexels-photo-1415810.jpeg?auto=compress&cs=tinysrgb&w=800',
+      title: 'Swimmer'
+    },
+    {
+      url: 'https://images.pexels.com/photos/1029604/pexels-photo-1029604.jpeg?auto=compress&cs=tinysrgb&w=800',
+      title: 'Stone Field'
+    },
+    {
+      url: 'https://images.pexels.com/photos/1624496/pexels-photo-1624496.jpeg?auto=compress&cs=tinysrgb&w=800',
+      title: 'Hilltop Stars'
+    },
+    {
       url: 'https://images.pexels.com/photos/1054218/pexels-photo-1054218.jpeg?auto=compress&cs=tinysrgb&w=800',
-      title: 'Misty Lake'
+      title: 'Mount Fuji'
     }
   ];
 
@@ -84,6 +84,7 @@ const BackgroundGallery: React.FC<BackgroundGalleryProps> = ({ onSelectBackgroun
             Choose Background
           </h2>
           <button
+          title='Close'
             onClick={onClose}
             className="text-slate-400 hover:text-slate-600 p-2 rounded-lg hover:bg-slate-100 transition-all duration-200 hover:scale-110"
           >

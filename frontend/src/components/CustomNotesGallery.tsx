@@ -193,12 +193,14 @@ const CustomNotesGallery: React.FC = () => {
                   </div>
                   <div className="absolute top-3 right-3 flex gap-2">
                     <button
+                    title='Edit'
                       onClick={() => handleEditNote(note)}
                       className="bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white p-2 rounded-full transition-all duration-200 hover:scale-110 shadow-lg"
                     >
                       <Edit size={16} />
                     </button>
                     <button
+                    title='Delete'
                       onClick={() => handleDeleteNote(note._id)}
                       className="bg-white/20 backdrop-blur-sm hover:bg-red-500/80 text-white p-2 rounded-full transition-all duration-200 hover:scale-110 shadow-lg"
                     >
