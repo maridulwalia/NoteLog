@@ -109,11 +109,11 @@ const TodoList: React.FC = () => {
               localStorage.setItem(notificationKey, 'shown');
               console.log('✅ Notification shown and marked');
               
-              // Auto-close after 10 seconds
-              setTimeout(() => {
-                notification.close();
-                console.log('🔕 Notification auto-closed after 30 seconds');
-              }, 30000);
+              // // Auto-close after 30 seconds instead of 5
+              // setTimeout(() => {
+              //   notification.close();
+              //   console.log('🔕 Notification auto-closed after 30 seconds');
+              // }, 30000);
               
               // Handle click
               notification.onclick = () => {
