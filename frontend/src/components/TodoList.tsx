@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { CheckCircle, Circle, Plus, Calendar, Edit, Trash2, Bell, Clock } from 'lucide-react';
+import { CheckCircle, Circle, Plus, Edit, Trash2, Bell, Clock } from 'lucide-react';
 import { todoService, Todo } from '../services/todoService';
 import TodoForm from './TodoForm';
 
@@ -39,15 +39,15 @@ const TodoList: React.FC = () => {
   useEffect(() => {
     if (todos.length === 0) return;
 
-    // console.log('⏰ Setting up reminder interval for', todos.length, 'todos');
+    console.log('⏰ Setting up reminder interval for', todos.length, 'todos');
     
     const reminderInterval = setInterval(() => {
-      // console.log('🔍 Checking reminders at', new Date().toLocaleTimeString());
-      // checkReminders();
-    }, 1000); // Check every 1 seconds for testing
+      console.log('🔍 Checking reminders at', new Date().toLocaleTimeString());
+      checkReminders();
+    }, 1000); // Check every 1 seconds
 
     return () => {
-      // console.log('🛑 Clearing reminder interval');
+      console.log('🛑 Clearing reminder interval');
       clearInterval(reminderInterval);
     };
   }, [todos]);
@@ -83,13 +83,13 @@ const TodoList: React.FC = () => {
         const reminderTime = new Date(todo.reminderDate).getTime();
         const timeDiff = now - reminderTime;
         
-        // console.log(`📝 Todo: "${todo.title}"`);
-        // console.log(`⏰ Reminder: ${new Date(reminderTime).toLocaleString()}`);
-        // console.log(`🕐 Current: ${new Date(now).toLocaleString()}`);
-        // console.log(`⏱️ Time diff: ${Math.round(timeDiff / 1000)} seconds`);
+        console.log(`📝 Todo: "${todo.title}"`);
+        console.log(`⏰ Reminder: ${new Date(reminderTime).toLocaleString()}`);
+        console.log(`🕐 Current: ${new Date(now).toLocaleString()}`);
+        console.log(`⏱️ Time diff: ${Math.round(timeDiff / 1000)} seconds`);
         
-        // Check if reminder time has passed and is within the last 60 seconds
-        if (timeDiff >= 0 && timeDiff <= 60000) {
+        // Check if reminder time has passed and is within the last 2 minutes (120 seconds)
+        if (timeDiff >= 0 && timeDiff <= 120000) {
           const notificationKey = `notification_${todo._id}_${reminderTime}`;
           console.log('🔑 Checking notification key:', notificationKey);
           
@@ -97,24 +97,23 @@ const TodoList: React.FC = () => {
             console.log('🚨 SHOWING NOTIFICATION for:', todo.title);
             
             try {
-              const notification = new Notification('📋 TaskFlow Reminder', {
+              const notification = new Notification('📋 NoteLog Reminder', {
                 body: `⏰ ${todo.title}${todo.description ? '\n' + todo.description : ''}`,
                 icon: '/vite.svg',
                 tag: todo._id,
-                requireInteraction: true,
-                silent: false,
-                persistent: true
+                requireInteraction: false,
+                silent: false
               });
               
               // Mark as shown immediately
               localStorage.setItem(notificationKey, 'shown');
               console.log('✅ Notification shown and marked');
               
-              // // Auto-close after 30 seconds instead of 5
-              // setTimeout(() => {
-              //   notification.close();
-              //   console.log('🔕 Notification auto-closed after 30 seconds');
-              // }, 30000);
+              // Auto-close after 10 seconds
+              setTimeout(() => {
+                notification.close();
+                console.log('🔕 Notification auto-closed after 30 seconds');
+              }, 30000);
               
               // Handle click
               notification.onclick = () => {
@@ -142,7 +141,7 @@ const TodoList: React.FC = () => {
         } else if (timeDiff < 0) {
           console.log('⏳ Reminder is in the future');
         } else {
-          console.log('⏰ Reminder is too old (more than 60 seconds ago)');
+          console.log('⏰ Reminder is too old (more than 2 minutes ago)');
         }
       }
     });
@@ -154,16 +153,16 @@ const TodoList: React.FC = () => {
     if (Notification.permission === 'granted') {
       try {
         const notification = new Notification('🧪 Test Notification', {
-          body: 'This is a test notification from NoteLog',
+          body: 'This is a test notification from TaskFlow',
           icon: '/vite.svg',
           tag: 'test',
-          requireInteraction: true,
-          persistent: true
+          requireInteraction: false,
+          silent: false
         });
         
         setTimeout(() => {
           notification.close();
-        }, 15000);
+        }, 5000);
         
         console.log('✅ Test notification sent');
       } catch (error) {
@@ -247,7 +246,7 @@ const TodoList: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 flex items-center justify-center">
+      <div className="min-h-full bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
           <p className="text-slate-600 font-medium">Loading your todos...</p>
@@ -257,8 +256,8 @@ const TodoList: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="min-h-full bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 p-8">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
             <div>
@@ -372,14 +371,14 @@ const TodoList: React.FC = () => {
                     </div>
                     <div className="flex items-center gap-2 ml-4">
                       <button
-                      title='Editing'
+                      title='Edit'
                         onClick={() => handleEdit(todo)}
                         className="text-slate-400 hover:text-blue-600 p-2 rounded-lg hover:bg-blue-50 transition-all duration-200 hover:scale-110"
                       >
                         <Edit size={16} />
                       </button>
                       <button
-                      title='Deleting'
+                      title='Delete'
                         onClick={() => handleDelete(todo._id)}
                         className="text-slate-400 hover:text-red-500 p-2 rounded-lg hover:bg-red-50 transition-all duration-200 hover:scale-110"
                       >

@@ -113,6 +113,7 @@ const CustomNoteEditor: React.FC<CustomNoteEditorProps> = ({
             )}
           </div>
           <button
+          title='Cancel'
             onClick={handleCancel}
             className="text-slate-400 hover:text-slate-600 p-2 rounded-lg hover:bg-slate-100 transition-all duration-200 hover:scale-110"
           >
